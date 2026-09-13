@@ -1,0 +1,26 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: joke-deployment
+spec:
+  # This is our desired state: we want 1 copy (pod) running.
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: joke # The Deployment finds Pods with this "name tag".
+
+  template: # This is the blueprint for the Pods it creates.
+    metadata:
+      labels:
+        app: joke # Give the Pods the "name tag" to be managed.
+    spec:
+      containers:
+      - name: joke-container
+        image: joke-app:2.0
+        # This tells Kubernetes to use the local image we built, instead of trying to pull it from a registry.
+        imagePullPolicy: IfNotPresent
+
+        ports:
+            - containerPort: 8080

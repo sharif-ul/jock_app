@@ -1,0 +1,19 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: joke-service
+spec:
+  # This type opens a port on your machine and forwards traffic to the Pods that match the selector.
+  type: NodePort
+
+  selector:
+    # IMPORTANT: This finds the pods with the matching label.
+    app: joke
+
+  ports:
+    - protocol: TCP
+      # The port for the Service itself. This is the port that will be exposed to the outside world.
+      port: 80
+      # The port on our pod that the Service should forward traffic to. This should match the containerPort in our Deployment.
+      targetPort: 8080
