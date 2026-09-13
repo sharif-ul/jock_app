@@ -74,13 +74,18 @@ stages {
 
                 kind export kubeconfig \
                     --name "${KIND_CLUSTER}" \
+                    --internal \
                     --kubeconfig "${KUBECONFIG_FILE}"
 
-                export KUBECONFIG="${KUBECONFIG_FILE}"
                 chmod 600 "${KUBECONFIG_FILE}"
 
+                echo "Kubernetes context:"
                 kubectl config current-context
+
+                echo "Kubernetes cluster:"
                 kubectl cluster-info
+
+                echo "Kubernetes nodes:"
                 kubectl get nodes -o wide
             '''
         }
@@ -90,7 +95,6 @@ stages {
         steps {
             sh '''
                 set -e
-                export KUBECONFIG="${KUBECONFIG_FILE}"
 
                 echo "Deploying ${IMAGE}..."
 
@@ -98,10 +102,13 @@ stages {
                     joke-container="${IMAGE}"
 
                 echo "Waiting for rollout..."
-                kubectl rollout status deployment/joke-deployment --timeout=120s
+
+                kubectl rollout status deployment/joke-deployment \
+                    --timeout=120s
             '''
         }
     }
+
     stage('Verify Deployment') {
         steps {
             sh '''
