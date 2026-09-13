@@ -134,6 +134,24 @@ stages {
             '''
         }
     }
+
+    stage('Smoke Test') {
+        steps {
+        sh '''
+        echo "Running application smoke test..."
+
+                kubectl run smoke-test \
+                    --rm \
+                    --restart=Never \
+                    --image=curlimages/curl:8.10.1 \
+                    --command -- \
+                    sh -c 'curl -f -s http://joke-service | grep -q "Served by"'
+
+                echo "Smoke test passed!"
+            '''
+        }
+
+    }
 }
 
 post {
