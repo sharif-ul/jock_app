@@ -15,15 +15,17 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install --no-cache-dir -r requirements.txt'
+                sh '''
+                    python -m venv .venv
+                    .venv/bin/pip install --no-cache-dir -r requirements.txt
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'pytest'
+                sh '.venv/bin/pytest'
             }
         }
-
     }
 }
