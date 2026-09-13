@@ -1,5 +1,5 @@
 # Start from a standard python 3 environment
-FROM python:3
+FROM python:3.12-slim
 
 # Set the working directory inside the container
 WORKDIR /app
