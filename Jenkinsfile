@@ -1,23 +1,29 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.12-slim'
+        }
+    }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
-                sh 'python -m unittest discover'
+                sh 'pip install --no-cache-dir -r requirements.txt'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Test') {
             steps {
-                sh 'docker build -t joke-app:${BUILD_NUMBER} .'
+                sh 'pytest'
             }
         }
+
     }
 }
