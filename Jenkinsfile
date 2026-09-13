@@ -56,30 +56,13 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    echo "Creating kubeconfig..."
+                    echo "Deploying joke-app:${BUILD_NUMBER}"
 
-                    kind get kubeconfig \
-                        --internal \
-                        --name "${KIND_CLUSTER}" \
-                        > "${KUBECONFIG_FILE}"
-
-                    export KUBECONFIG="${KUBECONFIG_FILE}"
-
-                    echo "Kubernetes cluster:"
-                    kubectl cluster-info
-
-                    echo "Current deployment:"
-                    kubectl get deployment joke-deployment
-
-                    echo "Updating deployment to ${IMAGE}"
-
-                    CONTAINER=$(kubectl get deployment joke-deployment \
-                        -o jsonpath='{.spec.template.spec.containers[0].name}')
+                    kind load docker-image joke-app:${BUILD_NUMBER} \
+                        --name joke-cluster
 
                     kubectl set image deployment/joke-deployment \
-                        "${CONTAINER}=${IMAGE}"
-
-                    echo "Waiting for rollout..."
+                        joke-container=joke-app:${BUILD_NUMBER}
 
                     kubectl rollout status deployment/joke-deployment \
                         --timeout=120s
@@ -90,16 +73,17 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 sh '''
-                    export KUBECONFIG="${KUBECONFIG_FILE}"
+                    echo "Deployment status:"
+                    kubectl get deployment joke-deployment
 
                     echo "Pods:"
                     kubectl get pods -l app=joke -o wide
 
-                    echo "Deployment:"
-                    kubectl get deployment joke-deployment
+                    echo "Running image:"
+                    kubectl get deployment joke-deployment \
+                        -o jsonpath='{.spec.template.spec.containers[0].image}'
 
-                    echo "Service:"
-                    kubectl get service joke-service
+                    echo
                 '''
             }
         }
