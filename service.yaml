@@ -1,8 +1,10 @@
 # service.yaml
 apiVersion: v1
 kind: Service
+
 metadata:
   name: joke-service
+
 spec:
   # This type opens a port on your machine and forwards traffic to the Pods that match the selector.
   type: NodePort

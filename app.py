@@ -22,8 +22,8 @@ JOKES = [
 def tell_a_joke():
     joke = random.choice(JOKES)
     hostname = socket.gethostname()
-    # Add a V2 marker to the output!
-    return f"{joke}\n[V2] (Served by : {hostname}\n)"
+    # Add a V3 marker to the output!
+    return f"{joke}\n[V3] (Served by : {hostname}\n)"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)

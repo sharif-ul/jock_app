@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: joke-container
-        image: joke-app:2.0
+        image: joke-app:local #joke-app:2.0
         # This tells Kubernetes to use the local image we built, instead of trying to pull it from a registry.
         imagePullPolicy: IfNotPresent
 
