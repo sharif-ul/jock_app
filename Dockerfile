@@ -5,10 +5,13 @@ FROM python:3
 WORKDIR /app
 
 # Install Flask
-RUN pip install Flask
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy our application code inside the container
-COPY . .
+COPY app.py .
+
+EXPOSE 8080
 
 # The command to run when the container starts
 CMD ["python", "app.py"]
